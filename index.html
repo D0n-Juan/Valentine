@@ -28,21 +28,33 @@
       overflow:hidden;
     }
 
-    /* Pages */
+    /* Pages with fade */
     .page{
       position:fixed;
       inset:0;
-      display:none;
+      display:flex;
       align-items:center;
       justify-content:center;
       padding: 24px;
       text-align:center;
+
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .35s ease;
     }
-    .page.active{ display:flex; }
+    .page.active{
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
 
     .content{
       width:min(820px, 92vw);
+      position: relative;
+      z-index: 2;
     }
+
     .headline{
       font-weight: 800;
       font-size: clamp(30px, 5vw, 56px);
@@ -72,7 +84,7 @@
     .btn:hover{ filter: brightness(1.05); }
     .btn:active{ transform: scale(.98); }
 
-    /* Final question layout (no box) */
+    /* Final question layout */
     .question{
       margin: 0 0 18px;
       font-weight: 800;
@@ -91,6 +103,19 @@
       width: min(700px, 92vw);
       height: 300px;
       margin: 0 auto;
+    }
+
+    .yay{
+      font-weight: 800;
+      font-size: clamp(42px, 6vw, 72px);
+      letter-spacing: -0.03em;
+      margin: 0 0 10px;
+    }
+    .tiny{
+      margin: 0;
+      font-weight: 500;
+      font-size: 14px;
+      opacity: .75;
     }
 
     .yes, .no{
@@ -124,11 +149,28 @@
       transform: translate(-50%,-50%);
     }
 
-    .success{
-      display:none;
-      margin-top: 18px;
-      font-weight: 800;
-      font-size: 20px;
+    /* Minimal heart burst (clean SVG outline) */
+    .hearts{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:1;
+    }
+
+    .heart{
+      position:absolute;
+      width: 18px;
+      height: 18px;
+      opacity: 0;
+      animation: rise 2.2s ease-out forwards;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.08));
+    }
+
+    @keyframes rise{
+      0%   { opacity: 0; transform: translate(0,0) scale(.95); }
+      10%  { opacity: .85; }
+      100% { opacity: 0; transform: translate(var(--dx, 0px), -250px) scale(2.15); }
     }
   </style>
 </head>
@@ -137,8 +179,8 @@
   <!-- 1 -->
   <section class="page active" id="p1">
     <div class="content">
-      <h1 class="headline">öffne die website auf deinem Mac…</h1>
-      <p class="sub">am laptop ist das ein bisschen lustiger 😌</p>
+      <h1 class="headline">öffne die website auf deinem Mac!</h1>
+      <p class="sub">für optimale Experience und so...</p>
       <button class="btn" data-next="p2">Weiter</button>
     </div>
   </section>
@@ -166,17 +208,27 @@
       <div class="message" id="msg"></div>
 
       <div class="arena" id="arena">
-        <button class="yes" id="yesBtn">Yes 💕</button>
-        <button class="no" id="noBtn">No 🙃</button>
+        <button class="yes" id="yesBtn">Yes 👀</button>
+        <button class="no" id="noBtn">No 😒</button>
       </div>
-
-      <div class="success" id="success">YAYYYYY!! 💖</div>
     </div>
   </section>
 
+  <!-- 5 (YES PAGE) -->
+  <section class="page" id="p5">
+    <div class="content">
+      <h1 class="yay">Yaay &lt;3</h1>
+      <p class="tiny" id="triesText"></p>
+    </div>
+
+    <!-- hearts layer -->
+    <div class="hearts" id="hearts"></div>
+  </section>
+
   <script>
-    // ---------- Simple page navigation ----------
-    const pages = ["p1","p2","p3","p4"].map(id => document.getElementById(id));
+    // ---------- Navigation ----------
+    const pages = ["p1","p2","p3","p4","p5"].map(id => document.getElementById(id));
+
     document.querySelectorAll("[data-next]").forEach(btn => {
       btn.addEventListener("click", () => showPage(btn.dataset.next));
     });
@@ -191,33 +243,31 @@
     const noBtn   = document.getElementById("noBtn");
     const yesBtn  = document.getElementById("yesBtn");
     const msgEl   = document.getElementById("msg");
-    const success = document.getElementById("success");
+    const triesText = document.getElementById("triesText");
+    const heartsLayer = document.getElementById("hearts");
 
     let tries = 0;
     let yesScale = 1;
 
-    // 5 custom message options (replace text as you like)
     const messages = {
-      Test1: "Test1",
-      Test2: "Test2",
-      Test3: "Test3",
-      Test4: "Test4",
-      Test5: "Test5"
+      Test1: "Click einfach auf Ja",
+      Test2: "Nicht ganz, der große grüne Knopf",
+      Test3: "🙁",
+      Test4: "Langsam wirds respektlos",
+      Test5: "Eine versucht wirklich ALLES um nicht auf Ja zu clicken 😞"
     };
 
     function setYesScale(v){
-      yesScale = Math.min(1.45, v);
+      yesScale = Math.min(5, v);
       document.documentElement.style.setProperty("--yesScale", yesScale.toFixed(3));
     }
 
     function updateMessage(){
-      // Interval mapping for "trying to click No"
-      // 1-2 => Test1, 3-4 => Test2, 5-6 => Test3, 7-8 => Test4, 9+ => Test5
       let text = "";
-      if (tries <= 2) text = messages.Test1;
-      else if (tries <= 4) text = messages.Test2;
-      else if (tries <= 6) text = messages.Test3;
-      else if (tries <= 8) text = messages.Test4;
+      if (tries <= 1) text = messages.Test1;
+      else if (tries <= 2) text = messages.Test2;
+      else if (tries <= 10) text = messages.Test3;
+      else if (tries <= 30) text = messages.Test4;
       else text = messages.Test5;
       msgEl.textContent = text;
     }
@@ -238,7 +288,7 @@
       noBtn.style.transform = "translate(0,0)";
 
       tries++;
-      setYesScale(1 + tries * 0.04); // grows as she tries "No"
+      setYesScale(1 + tries * 0.12); // faster growth
       updateMessage();
     }
 
@@ -246,24 +296,61 @@
     noBtn.addEventListener("mouseenter", moveNo);
     noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); }, {passive:false});
 
-    // "No" dodges when cursor gets close
+    // "No" dodges when cursor gets close (radius)
     arena.addEventListener("mousemove", (e) => {
       const r = noBtn.getBoundingClientRect();
       const cx = r.left + r.width/2;
       const cy = r.top  + r.height/2;
       const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
-      if (dist < 110) moveNo();
+
+      if (dist < 50) moveNo(); // smaller radius = easier to click YES
     });
 
-    // Clicking yes ends it
+    // Minimal clean hearts (SVG outline)
+    function burstHearts(){
+      heartsLayer.innerHTML = "";
+
+      const count = 20;
+      for (let i = 0; i < count; i++){
+        const h = document.createElement("div");
+        h.className = "heart";
+
+        // spawn near center-ish
+        const x = 50 + (Math.random() * 26 - 13);
+        const y = 68 + (Math.random() * 4 - 2);
+        const dx = (Math.random() * 260 - 130) + "px";
+
+        h.style.left = x + "%";
+        h.style.top  = y + "%";
+        h.style.setProperty("--dx", dx);
+        h.style.animationDuration = (4 + Math.random() * 1.2) + "s";
+
+        // Minimal heart SVG
+        h.innerHTML = `
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+               stroke="rgba(17,17,17,0.35)" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.8 4.6c-1.8-1.7-4.6-1.6-6.3 0L12 7.1 9.5 4.6c-1.7-1.6-4.5-1.7-6.3 0-2 1.9-2 5 0 6.9L12 20l8.8-8.5c2-1.9 2-5 0-6.9z"/>
+          </svg>
+        `;
+
+        heartsLayer.appendChild(h);
+        setTimeout(() => h.remove(), 12600);
+      }
+    }
+
+    // Clicking yes -> page 5 + hearts + tries text
     yesBtn.addEventListener("click", () => {
-      noBtn.style.display = "none";
-      msgEl.textContent = "";
-      success.style.display = "block";
-      yesBtn.textContent = "YES!! 💘";
+      if (tries === 0) {
+        triesText.textContent = "und du hast nicht mal ans Ablehnen gedacht 😌, bis Samstag <3";
+      } else {
+        triesText.textContent = `Und du hast nur ${tries}x versucht abzulehnen <3`;
+      }
+
+      showPage("p5");
+      burstHearts();
     });
 
-    // initial message
     updateMessage();
   </script>
 </body>
