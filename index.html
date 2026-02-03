@@ -2,444 +2,269 @@
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>💘</title>
 
-  <!-- Cute + "cool" fonts -->
+  <!-- One clean font only -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --bg1:#ffd6e7;
-      --bg2:#ff93b7;
-      --ink:#1f1f1f;
-      --card: rgba(255,255,255,.72);
-      --stroke: rgba(255,255,255,.55);
-      --shadow: 0 24px 70px rgba(0,0,0,.18);
+      --bg1:#ffe3ee;
+      --bg2:#ff9fbc;
+      --text:#111;
+      --yesScale: 1;
     }
 
     *{ box-sizing:border-box; }
-    html, body { height:100%; }
+    html,body{ height:100%; }
     body{
       margin:0;
-      font-family: "Space Grotesk", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color:var(--ink);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
       background: radial-gradient(1200px 700px at 20% 0%, var(--bg1), var(--bg2));
-      overflow-x:hidden;
-    }
-
-    .wrap{
-      width:min(860px, 92vw);
-      margin: 0 auto;
-      padding: 22px 0 80px;
-    }
-
-    .glass{
-      background: var(--card);
-      border: 1px solid var(--stroke);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      border-radius: 26px;
-    }
-
-    /* ============ Disclaimer overlay ============ */
-    .overlay{
-      position:fixed;
-      inset:0;
-      display:grid;
-      place-items:center;
-      padding: 18px;
-      background: radial-gradient(900px 500px at 50% 20%, rgba(255,255,255,.25), rgba(0,0,0,.35));
-      z-index:999;
-    }
-
-    .overlay-card{
-      width:min(720px, 94vw);
-      padding: 28px 22px;
-      text-align:center;
-      position:relative;
       overflow:hidden;
     }
-    .overlay-card::before{
-      content:"";
-      position:absolute;
-      inset:-40%;
-      background:
-        radial-gradient(circle at 30% 30%, rgba(255,90,150,.35), transparent 50%),
-        radial-gradient(circle at 70% 60%, rgba(255,255,255,.35), transparent 45%),
-        radial-gradient(circle at 40% 80%, rgba(255,0,120,.22), transparent 55%);
-      filter: blur(10px);
-      transform: rotate(12deg);
-      pointer-events:none;
-    }
 
-    .disclaimer-title{
-      position:relative;
-      margin: 0 0 10px;
-      font-family: "Pacifico", cursive;
-      font-size: clamp(30px, 4.2vw, 44px);
-      letter-spacing: .3px;
+    /* Pages */
+    .page{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 24px;
+      text-align:center;
     }
-    .disclaimer-sub{
-      position:relative;
+    .page.active{ display:flex; }
+
+    .content{
+      width:min(820px, 92vw);
+    }
+    .headline{
+      font-weight: 800;
+      font-size: clamp(30px, 5vw, 56px);
+      line-height: 1.05;
       margin: 0 0 18px;
-      opacity:.9;
+      letter-spacing: -0.02em;
+    }
+    .sub{
+      font-weight: 500;
       font-size: 16px;
+      opacity:.85;
+      margin: 0 0 26px;
     }
 
     .btn{
-      position:relative;
       border:0;
-      cursor:pointer;
-      padding: 12px 18px;
       border-radius: 999px;
-      font-weight:700;
-      font-size:16px;
-      box-shadow: 0 14px 26px rgba(0,0,0,.16);
-      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
-      user-select:none;
+      padding: 12px 18px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor:pointer;
+      background:#111;
+      color:#fff;
+      transition: transform .12s ease, filter .12s ease;
       -webkit-tap-highlight-color: transparent;
     }
-    .btn:active{ transform: translateY(1px) scale(.98); }
-    .btn.primary{
-      background: #111;
-      color:#fff;
-    }
-    .btn.ghost{
-      background: rgba(255,255,255,.55);
-      color:#111;
-      border:1px solid rgba(0,0,0,.08);
-    }
-    .btn:hover{ filter: brightness(1.03); }
+    .btn:hover{ filter: brightness(1.05); }
+    .btn:active{ transform: scale(.98); }
 
-    /* ============ Sections ============ */
-    section{
-      margin-top: 18px;
-      padding: 22px 20px;
-    }
-
-    .hero{
-      padding: 26px 20px;
-    }
-
-    .bigline{
-      font-size: clamp(24px, 3.2vw, 34px);
+    /* Final question layout (no box) */
+    .question{
+      margin: 0 0 18px;
       font-weight: 800;
-      margin: 0 0 12px;
-      line-height: 1.15;
+      font-size: clamp(28px, 4.6vw, 54px);
+      letter-spacing: -0.02em;
     }
-    .line{
-      font-size: clamp(18px, 2.3vw, 22px);
-      margin: 10px 0;
-      opacity:.95;
-    }
-
-    .hint{
-      margin-top: 14px;
-      opacity:.75;
-      font-size: 14px;
+    .message{
+      height: 28px;
+      margin: 0 0 16px;
+      font-weight: 600;
+      opacity: .85;
     }
 
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 14px;
+    .arena{
+      position: relative;
+      width: min(700px, 92vw);
+      height: 300px;
+      margin: 0 auto;
     }
 
-    /* ============ Valentine stage ============ */
-    .stage{
-      position:relative;
-      height: 240px;
-      border-radius: 22px;
-      background: rgba(255,255,255,.35);
-      border: 1px solid rgba(255,255,255,.55);
-      overflow:hidden;
-      margin-top: 14px;
-    }
-
-    .val-title{
-      margin: 0 0 6px;
-      font-family: "Pacifico", cursive;
-      font-size: clamp(30px, 4.4vw, 46px);
-    }
-
-    .val-sub{
-      margin: 0 0 10px;
-      opacity:.9;
-    }
-
-    .float-hearts{
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      opacity:.95;
-    }
-    .heart{
-      position:absolute;
-      bottom:-20px;
-      font-size: 18px;
-      filter: drop-shadow(0 8px 12px rgba(0,0,0,.15));
-      animation: floatUp linear forwards;
-    }
-    @keyframes floatUp{
-      from{ transform: translateY(0); opacity:0; }
-      10%{ opacity:1; }
-      to{ transform: translateY(-280px); opacity:0; }
-    }
-
-    .stage .choice{
-      position:absolute;
-      top: 62%;
-      left:50%;
-      transform: translate(-50%,-50%);
-      display:flex;
-      gap: 14px;
-      align-items:center;
-    }
-
-    .yesBtn, .noBtn{
+    .yes, .no{
       position:absolute;
       border:0;
-      padding: 12px 18px;
       border-radius: 999px;
+      padding: 12px 18px;
       font-weight: 800;
       font-size: 16px;
       cursor:pointer;
-      box-shadow: 0 16px 30px rgba(0,0,0,.16);
-      transition: transform .12s ease, box-shadow .12s ease;
-      user-select:none;
+      color:#fff;
+      box-shadow: 0 16px 34px rgba(0,0,0,.18);
+      transition: transform .12s ease;
       -webkit-tap-highlight-color: transparent;
+      user-select:none;
+      white-space:nowrap;
     }
-
-    .yesBtn{
+    .yes{
       background:#22c55e;
-      color:white;
-      left: 36%;
-      top: 68%;
-      transform: translate(-50%,-50%) scale(var(--yesScale, 1));
+      left: 38%;
+      top: 62%;
+      transform: translate(-50%,-50%) scale(var(--yesScale));
     }
-    .yesBtn:hover{
-      transform: translate(-50%,-50%) scale(calc(var(--yesScale, 1) * 1.06));
+    .yes:hover{
+      transform: translate(-50%,-50%) scale(calc(var(--yesScale) * 1.06));
     }
-
-    .noBtn{
+    .no{
       background:#ef4444;
-      color:white;
-      left: 64%;
-      top: 68%;
+      left: 62%;
+      top: 62%;
       transform: translate(-50%,-50%);
-    }
-
-    .result{
-      display:none;
-      margin-top: 12px;
-      font-size: 18px;
-      font-weight: 800;
     }
 
     .success{
       display:none;
-      text-align:center;
-      padding: 26px 18px;
-    }
-    .success h2{
-      margin: 0 0 8px;
-      font-family:"Pacifico", cursive;
-      font-size: clamp(34px, 5vw, 54px);
-    }
-    .success p{
-      margin:0;
-      font-size: 18px;
-      opacity:.95;
-    }
-
-    .divider{
-      height:1px;
-      background: rgba(0,0,0,.06);
-      margin: 18px 0;
+      margin-top: 18px;
+      font-weight: 800;
+      font-size: 20px;
     }
   </style>
 </head>
 
 <body>
-  <!-- Disclaimer overlay -->
-  <div class="overlay" id="overlay">
-    <div class="overlay-card glass">
-      <h1 class="disclaimer-title">mach mich auf deinem Macbook auf</h1>
-      <p class="disclaimer-sub">kleiner Hinweis: am Laptop ist das gleich noch lustiger ✨</p>
-      <div class="row" style="justify-content:center;">
-        <button class="btn primary" id="enterBtn">okay, let's go 💻</button>
-        <button class="btn ghost" id="enterAnywayBtn">ich bin am handy… egal 😌</button>
-      </div>
-      <p class="hint">ps: du kannst später einfach runter scrollen.</p>
+  <!-- 1 -->
+  <section class="page active" id="p1">
+    <div class="content">
+      <h1 class="headline">öffne die website auf deinem Mac…</h1>
+      <p class="sub">am laptop ist das ein bisschen lustiger 😌</p>
+      <button class="btn" data-next="p2">Weiter</button>
     </div>
-  </div>
+  </section>
 
-  <div class="wrap">
-    <!-- Story / intro -->
-    <section class="glass hero" id="intro">
-      <div class="bigline">Hey Josi, das ist jz ein bisschen komisch</div>
-      <div class="line">und ich weiß das kommt ein bisschen plötzlich</div>
-      <div class="line"><b>aber</b> …</div>
+  <!-- 2 -->
+  <section class="page" id="p2">
+    <div class="content">
+      <h1 class="headline">Hey Josi, das ein bisschen awkward</h1>
+      <button class="btn" data-next="p3">Weiter</button>
+    </div>
+  </section>
 
-      <div class="row" style="justify-content:flex-start;">
-        <button class="btn primary" id="nextBtn">Weiter ↓</button>
-        <button class="btn ghost" id="skipBtn">Direkt zur Frage 💘</button>
+  <!-- 3 -->
+  <section class="page" id="p3">
+    <div class="content">
+      <h1 class="headline">und kommt auch voll aus dem Nichts, aber…</h1>
+      <button class="btn" data-next="p4">Okay</button>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="page" id="p4">
+    <div class="content">
+      <div class="question">Will you be my Valentine? 💘</div>
+      <div class="message" id="msg"></div>
+
+      <div class="arena" id="arena">
+        <button class="yes" id="yesBtn">Yes 💕</button>
+        <button class="no" id="noBtn">No 🙃</button>
       </div>
-      <div class="hint">Du kannst auch einfach scrollen.</div>
-    </section>
 
-    <!-- Main valentine -->
-    <section class="glass" id="valentine">
-      <h2 class="val-title">Will you be my Valentine? 💘</h2>
-      <p class="val-sub">entscheid dich weise. (der “No” button hat… probleme mit commitment.)</p>
-
-      <div class="stage" id="stage">
-        <div class="float-hearts" id="hearts"></div>
-
-        <button class="yesBtn" id="yesBtn">Yes 💕</button>
-        <button class="noBtn" id="noBtn">No 🙃</button>
-      </div>
-
-      <div class="result" id="result">OKAY WOW 😍💐</div>
-
-      <div class="success glass" id="success" style="margin-top:16px;">
-        <h2>YAYYYYY!! 💖</h2>
-        <p>ich freu mich so ❤️</p>
-      </div>
-    </section>
-  </div>
+      <div class="success" id="success">YAYYYYY!! 💖</div>
+    </div>
+  </section>
 
   <script>
-    // ===== Overlay handling =====
-    const overlay = document.getElementById("overlay");
-    const enterBtn = document.getElementById("enterBtn");
-    const enterAnywayBtn = document.getElementById("enterAnywayBtn");
+    // ---------- Simple page navigation ----------
+    const pages = ["p1","p2","p3","p4"].map(id => document.getElementById(id));
+    document.querySelectorAll("[data-next]").forEach(btn => {
+      btn.addEventListener("click", () => showPage(btn.dataset.next));
+    });
 
-    function closeOverlay(){
-      overlay.style.display = "none";
-      // tiny nice touch: jump to top after overlay so intro is visible
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    function showPage(id){
+      pages.forEach(p => p.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
     }
-    enterBtn.addEventListener("click", closeOverlay);
-    enterAnywayBtn.addEventListener("click", closeOverlay);
 
-    // ===== Smooth navigation =====
-    const nextBtn = document.getElementById("nextBtn");
-    const skipBtn = document.getElementById("skipBtn");
-    const valentine = document.getElementById("valentine");
-
-    function scrollToValentine(){
-      valentine.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-    nextBtn.addEventListener("click", scrollToValentine);
-    skipBtn.addEventListener("click", scrollToValentine);
-
-    // ===== Valentine buttons behavior =====
-    const stage = document.getElementById("stage");
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const result = document.getElementById("result");
-    const hearts = document.getElementById("hearts");
+    // ---------- Valentine behavior ----------
+    const arena   = document.getElementById("arena");
+    const noBtn   = document.getElementById("noBtn");
+    const yesBtn  = document.getElementById("yesBtn");
+    const msgEl   = document.getElementById("msg");
     const success = document.getElementById("success");
 
-    let yesScale = 1.0;     // grows over time
-    let dodgeCount = 0;
+    let tries = 0;
+    let yesScale = 1;
+
+    // 5 custom message options (replace text as you like)
+    const messages = {
+      Test1: "Test1",
+      Test2: "Test2",
+      Test3: "Test3",
+      Test4: "Test4",
+      Test5: "Test5"
+    };
 
     function setYesScale(v){
-      yesScale = Math.min(1.42, v); // cap so it doesn't get ridiculous
-      stage.style.setProperty("--yesScale", yesScale.toFixed(3));
+      yesScale = Math.min(1.45, v);
+      document.documentElement.style.setProperty("--yesScale", yesScale.toFixed(3));
     }
 
-    function rand(min, max){ return Math.random() * (max - min) + min; }
+    function updateMessage(){
+      // Interval mapping for "trying to click No"
+      // 1-2 => Test1, 3-4 => Test2, 5-6 => Test3, 7-8 => Test4, 9+ => Test5
+      let text = "";
+      if (tries <= 2) text = messages.Test1;
+      else if (tries <= 4) text = messages.Test2;
+      else if (tries <= 6) text = messages.Test3;
+      else if (tries <= 8) text = messages.Test4;
+      else text = messages.Test5;
+      msgEl.textContent = text;
+    }
 
-    function moveNoButton(){
-      const stageRect = stage.getBoundingClientRect();
-      const btnRect = noBtn.getBoundingClientRect();
+    function moveNo(){
+      const a = arena.getBoundingClientRect();
+      const b = noBtn.getBoundingClientRect();
 
-      const padding = 10;
-      const maxX = stageRect.width - btnRect.width - padding;
-      const maxY = stageRect.height - btnRect.height - padding;
+      const pad = 10;
+      const maxX = a.width - b.width - pad;
+      const maxY = a.height - b.height - pad;
 
-      // random position within stage
-      const x = rand(padding, Math.max(padding, maxX));
-      const y = rand(padding, Math.max(padding, maxY));
+      const x = pad + Math.random() * Math.max(pad, maxX);
+      const y = pad + Math.random() * Math.max(pad, maxY);
 
-      // place using left/top in stage coordinates
-      const stageX = x;
-      const stageY = y;
-
-      noBtn.style.left = stageX + "px";
-      noBtn.style.top = stageY + "px";
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
       noBtn.style.transform = "translate(0,0)";
 
-      // make "Yes" a bit more tempting each time "No" runs away 😈
-      dodgeCount++;
-      setYesScale(1 + dodgeCount * 0.035);
-
-      // tiny feedback
-      result.style.display = "block";
-      result.textContent = dodgeCount < 6 ? "hmm…" : (dodgeCount < 12 ? "okay?? 😳" : "DU WILLST DOCH YES 😌");
+      tries++;
+      setYesScale(1 + tries * 0.04); // grows as she tries "No"
+      updateMessage();
     }
 
-    function spawnHeart(){
-      const h = document.createElement("div");
-      h.className = "heart";
-      h.textContent = Math.random() > 0.5 ? "💗" : "💖";
-      h.style.left = rand(4, 96) + "%";
-      h.style.animationDuration = rand(2.7, 4.6) + "s";
-      h.style.fontSize = rand(16, 26) + "px";
-      hearts.appendChild(h);
-      setTimeout(() => h.remove(), 5200);
-    }
+    // "No" dodges on hover + touch
+    noBtn.addEventListener("mouseenter", moveNo);
+    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); }, {passive:false});
 
-    // Runs away on hover (classic)
-    noBtn.addEventListener("mouseenter", moveNoButton);
-
-    // Runs away on touch too
-    noBtn.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-      moveNoButton();
-    }, { passive: false });
-
-    // Runs away when cursor gets close (proximity dodge)
-    stage.addEventListener("mousemove", (e) => {
+    // "No" dodges when cursor gets close
+    arena.addEventListener("mousemove", (e) => {
       const r = noBtn.getBoundingClientRect();
-      const cx = r.left + r.width / 2;
-      const cy = r.top + r.height / 2;
+      const cx = r.left + r.width/2;
+      const cy = r.top  + r.height/2;
       const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
-
-      // distance threshold — adjust if you want it more/less evil
-      if (dist < 110) moveNoButton();
+      if (dist < 110) moveNo();
     });
 
-    // Yes click => success screen
+    // Clicking yes ends it
     yesBtn.addEventListener("click", () => {
-      // stop the game
       noBtn.style.display = "none";
-      yesBtn.textContent = "YES!! 💘";
-      result.style.display = "none";
+      msgEl.textContent = "";
       success.style.display = "block";
-
-      // hearts burst
-      for (let i = 0; i < 30; i++) {
-        setTimeout(spawnHeart, i * 90);
-      }
+      yesBtn.textContent = "YES!! 💘";
     });
 
-    // Start with No in a slightly randomized place
-    // (but still initially near right side so the layout looks intentional)
-    requestAnimationFrame(() => {
-      // place "No" once in stage coordinates
-      const s = stage.getBoundingClientRect();
-      noBtn.style.left = (s.width * 0.66) + "px";
-      noBtn.style.top  = (s.height * 0.68) + "px";
-      noBtn.style.transform = "translate(-50%,-50%)";
-      setYesScale(1.0);
-    });
+    // initial message
+    updateMessage();
   </script>
 </body>
 </html>
